@@ -97,4 +97,19 @@ router.delete("/:id", (req, res) => {
         });
 });
 
+router.get("/limit/:id", (req, res) => {
+    knex.select("*")
+        .from("Accounts")
+        .limit(req.params.id)
+        .then((accts) => {
+            console.log(accts);
+            if (accts) {
+                res.status(200).json(accts);
+            } else res.status(404).json({ error: "ID not in database" });
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+});
+
 module.exports = router;
