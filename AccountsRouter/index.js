@@ -25,7 +25,9 @@ router.get("/:id", (req, res) => {
         .first()
         .then((acct) => {
             console.log(acct);
-            res.status(200).json(acct);
+            if (acct) {
+                res.status(200).json(acct);
+            } else res.status(404).json({ error: "ID not in database" });
         })
         .catch((err) => {
             console.log(err);
@@ -36,7 +38,9 @@ router.post("/", (req, res) => {
     knex.insert(req.body, "*")
         .into("Accounts")
         .then((newAcct) => {
-            res.status(201).json(newAcct);
+            if (!req.body.name || !req.body.budget) {
+                res.status(400).json({ error: "Missing Name or budget" });
+            } else res.status(201).json(newAcct);
         })
         .catch((err) => {
             console.log(err);
@@ -76,7 +80,9 @@ router.delete("/:id", (req, res) => {
         .then((count) => {
             console.log(count);
             if (count > 0) {
-                res.status(200).json({
+                res.status(410).json({
+                    // 410 Gone
+                    // This response is sent when the requested content has been permanently deleted from server, with no forwarding address. Clients are expected to remove their caches and links to the resource. The HTTP specification intends this status code to be used for "limited-time, promotional services". APIs should not feel compelled to indicate resources that have been deleted with this status code.
                     message: "Record deleted successfully",
                 });
             } else {
