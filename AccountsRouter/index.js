@@ -44,4 +44,51 @@ router.post("/", (req, res) => {
         });
 });
 
+router.put("/:id", (req, res) => {
+    const { id } = req.params;
+    const changes = req.body;
+    knex("Accounts")
+        .where({ id })
+        .update(changes)
+        .then((count) => {
+            console.log(count);
+            if (count > 0) {
+                res.status(203).json({
+                    message: "Record updated successfully",
+                    Changes: `${count} change(s) were done`,
+                });
+            } else {
+                res.status(404).json({
+                    error: "ID was not found in the data base",
+                });
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+});
+router.delete("/:id", (req, res) => {
+    const { id } = req.params;
+    knex("Accounts")
+        .where({ id })
+        .del()
+        .then((count) => {
+            console.log(count);
+            if (count > 0) {
+                res.status(200).json({
+                    message: "Record deleted successfully",
+                });
+            } else {
+                res.status(404).json({
+                    error: "ID was not found in the data base",
+                });
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+});
+
 module.exports = router;
