@@ -11,6 +11,24 @@ router.get("/", (req, res) => {
         })
         .catch((err) => {
             console.log(err);
+            res.status(500).json({
+                Error: "Error retrieving the accounts information",
+                err,
+            });
+        });
+});
+
+router.get("/:id", (req, res) => {
+    knex.select("*")
+        .from("Accounts")
+        .where("id", req.params.id)
+        .first()
+        .then((acct) => {
+            console.log(acct);
+            res.status(200).json(acct);
+        })
+        .catch((err) => {
+            console.log(err);
         });
 });
 
