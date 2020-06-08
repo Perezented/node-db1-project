@@ -32,4 +32,16 @@ router.get("/:id", (req, res) => {
         });
 });
 
+router.post("/", (req, res) => {
+    knex.insert(req.body, "*")
+        .into("Accounts")
+        .then((newAcct) => {
+            res.status(201).json(newAcct);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+});
+
 module.exports = router;
