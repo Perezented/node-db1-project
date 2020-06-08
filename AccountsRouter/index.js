@@ -35,19 +35,36 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-    knex.insert(req.body, "*")
-        .into("Accounts")
-        .then((newAcct) => {
-            if (!req.body.name || !req.body.budget) {
-                res.status(400).json({ error: "Missing Name or budget" });
-            } else res.status(201).json(newAcct);
-        })
-        .catch((err) => {
-            console.log(err);
-            if (err.errno === 19) {
-                res.status(400).json({ Error: "Account name already exists" });
-            } else res.status(500).json(err);
-        });
+    // knex.insert(req.body, "*")
+    //     .into("Accounts")
+    //     .then((newAcct) => {
+    //         if (req.body.name && req.body.budget) {
+    //             res.status(201).json(newAcct);
+    //         } else if (!req.body.name) {
+    //             res.status(400).json({ error: "Missing name" });
+    //         } else if (!req.body.budget) {
+    //             res.status(400).json({ error: "Missing budget" });
+    //         }
+    //     });
+
+    if (req.body.name && req.body.budget) {
+        knex.insert(req.body, "*")
+            .into("Accounts")
+            .then((newAcct) => {
+                res.status(201).json(newAcct);
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json({
+                    error: "Account name may already exist",
+                    err,
+                });
+            });
+    } else if (!req.body.name) {
+        res.status(400).json({ error: "Missing name" });
+    } else if (!req.body.budget) {
+        res.status(400).json({ error: "Missing budget" });
+    }
 });
 
 router.put("/:id", (req, res) => {
