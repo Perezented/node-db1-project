@@ -44,7 +44,9 @@ router.post("/", (req, res) => {
         })
         .catch((err) => {
             console.log(err);
-            res.status(500).json(err);
+            if (err.errno === 19) {
+                res.status(400).json({ Error: "Account name already exists" });
+            } else res.status(500).json(err);
         });
 });
 
